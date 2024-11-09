@@ -1,0 +1,28 @@
+name: paperless-ngx-tools
+services:
+  gotenberg:
+    command:
+      - gotenberg
+      - '--chromium-disable-javascript=true'
+      - '--chromium-allow-list=file:///tmp/.*'
+    image: docker.io/gotenberg/gotenberg:8
+    ports:
+      - app_protocol: http
+        host_ip: 192.168.4.241
+        mode: ingress
+        name: http
+        protocol: tcp
+        published: 3000
+        target: 3000
+    restart: unless-stopped
+  tika:
+    image: docker.io/apache/tika:latest
+    ports:
+      - app_protocol: http
+        host_ip: 192.168.4.241
+        mode: ingress
+        name: http
+        protocol: tcp
+        published: 9998
+        target: 9998
+    restart: unless-stopped

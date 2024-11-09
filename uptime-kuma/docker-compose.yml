@@ -1,0 +1,46 @@
+name: uptime-kuma
+services:
+  uptime-kuma:
+    image: louislam/uptime-kuma:1
+    pull_policy: missing
+    restart: unless-stopped
+    ports:
+      - name: http
+        target: 3001
+        host_ip: 192.168.4.241
+        published: 3001
+        protocol: tcp
+        app_protocol: http
+        mode: ingress
+    volumes:
+      - type: bind
+        source: /mnt/ssd/appdata/uptime-kuma/
+        target: /app/data
+    networks:
+      - uptime-kuma
+  signal-cli-rest-api:
+    image: bbernhard/signal-cli-rest-api:0.89
+    pull_policy: missing
+    restart: unless-stopped
+    environment:
+      MODE: normal
+      SIGNAL_CLI_UID: 568
+      SIGNAL_CLI_GID: 568
+      PORT: 8080
+      AUTO_RECEIVE_SCHEDULE: 5 */6 * * *
+    volumes:
+      - type: bind
+        source: /mnt/ssd/appdata/signal-cli
+        target: /home/.local/share/signal-cli
+    networks:
+      - uptime-kuma
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/v1/health"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+      start_interval: 5s
+
+networks:
+  uptime-kuma:

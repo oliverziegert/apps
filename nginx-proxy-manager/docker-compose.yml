@@ -1,0 +1,65 @@
+services:
+  app:
+    image: jc21/nginx-proxy-manager:2.12.1
+    restart: unless-stopped
+    ports:
+      - name: http
+        target: 80
+        host_ip: 192.168.4.241
+        published: 80
+        protocol: tcp
+        app_protocol: http
+        mode: ingress
+      - name: https
+        target: 443
+        host_ip: 192.168.4.241
+        published: 443
+        protocol: tcp
+        app_protocol: http
+        mode: ingress
+      - name: ui
+        target: 81
+        host_ip: 192.168.4.241
+        published: 8443
+        protocol: tcp
+        app_protocol: http
+        mode: ingress
+      - name: git
+        target: 2222
+        host_ip: 192.168.4.241
+        published: 2222
+        protocol: tcp
+        app_protocol: ssh
+        mode: ingress
+      - name: teamspeak
+        target: 9987
+        host_ip: 192.168.4.241
+        published: 9987
+        protocol: udp
+        mode: ingress
+      - name: teamspeak_sq
+        target: 10011
+        host_ip: 192.168.4.241
+        published: 10011
+        protocol: tcp
+        mode: ingress
+    environment:
+      TZ: Europe/Berlin
+      DB_SQLITE_FILE: /data/database.sqlite
+      DISABLE_IPV6: 'true'
+      PUID: 568
+      PGID: 568
+    healthcheck:
+      test: ["CMD", "/usr/bin/check-health"]
+      interval: 10s
+      timeout: 3s
+    volumes:
+      - type: bind
+        source: /mnt/hdd/appdata/nginx-proxy-manager/data
+        target: /data
+      - type: bind
+        source: /mnt/hdd/appdata/nginx-proxy-manager/cert
+        target: /etc/letsencrypt
+
+networks:
+  reverse_proxy:
