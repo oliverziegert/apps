@@ -1,23 +1,16 @@
 name: uptime-kuma
 services:
   uptime-kuma:
-    image: louislam/uptime-kuma:1
+    image: louislam/uptime-kuma:1.23.15
     pull_policy: missing
     restart: unless-stopped
-    ports:
-      - name: http
-        target: 3001
-        host_ip: 192.168.4.241
-        published: 3001
-        protocol: tcp
-        app_protocol: http
-        mode: ingress
     volumes:
       - type: bind
         source: /mnt/ssd/appdata/uptime-kuma/
         target: /app/data
     networks:
       - uptime-kuma
+      - reverse-proxy
   signal-cli-rest-api:
     image: bbernhard/signal-cli-rest-api:0.89
     pull_policy: missing
@@ -44,3 +37,6 @@ services:
 
 networks:
   uptime-kuma:
+  reverse-proxy:
+    external: true
+    name: nginx-proxy-manager_reverse-proxy

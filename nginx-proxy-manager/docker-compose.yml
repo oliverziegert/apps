@@ -5,6 +5,13 @@ services:
     image: jc21/nginx-proxy-manager:2.12.1
     restart: unless-stopped
     ports:
+      - name: smtp
+        target: 25
+        host_ip: 192.168.4.241
+        published: 25
+        protocol: tcp
+        app_protocol: smtp
+        mode: ingress
       - name: http
         target: 80
         host_ip: 192.168.4.241

@@ -17,5 +17,5 @@ services:
 
 networks:
   paperless-ngx:
-      external: true
-      name: ix-paperless-ngx_default
+    external: true
+    name: ix-paperless-ngx_default
