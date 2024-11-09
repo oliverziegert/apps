@@ -1,0 +1,68 @@
+services:
+  jellyfin:
+    cap_drop:
+      - ALL
+    environment:
+      JELLYFIN_PublishedServerUrl: media.pc-ziegert.de
+      NVIDIA_VISIBLE_DEVICES: void
+      TZ: Europe/Berlin
+    healthcheck:
+      interval: 10s
+      retries: 30
+      start_period: 10s
+      test:
+        - CMD
+        - curl
+        - --silent
+        - --output
+        - /dev/null
+        - --show-error
+        - --fail
+        - http://127.0.0.1:8096/health
+      timeout: 5s
+    image: jellyfin/jellyfin:10.10.1
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges
+    user: '568:568'
+    volumes:
+      - type: bind
+        source: /mnt/hdd/appdata/jellyfin/cache
+        target: /cache
+        read_only: false
+      - type: bind
+        source: /mnt/ssd/appdata/jellyfin
+        target: /config
+        read_only: false
+      - type: bind
+        source: /mnt/hdd/appdata/jellyfin/transcode
+        target: /config/transcodes
+        read_only: false
+      - type: bind
+        source: /mnt/hdd/data/multimedia/3D
+        target: /media/3d
+        read_only: true
+      - type: bind
+        source: /mnt/hdd/data/multimedia/Clips
+        target: /media/clips
+        read_only: true
+      - type: bind
+        source: /mnt/hdd/data/multimedia/Movies
+        target: /media/movies
+        read_only: true
+      - type: bind
+        source: /mnt/hdd/data/multimedia/Serien
+        target: /media/series
+        read_only: true
+      - type: bind
+        source: /mnt/hdd/data/multimedia/TV
+        target: /media/tv
+        read_only: true
+    networks:
+      - reverse-proxy
+
+networks:
+  reverse-proxy:
+    external: true
+    name: nginx-proxy-manager_reverse-proxy
+

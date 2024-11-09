@@ -49,7 +49,6 @@ services:
        --o:mount_jail_tree=false
       server_name: office.pc-ziegert.de:443
       timezone: Europe/Berlin
-
     networks:
       - reverse-proxy
       - nextcloud
