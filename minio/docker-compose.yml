@@ -22,10 +22,8 @@ services:
         - CMD 
         - mc
         - ready
-        - --insecure
-        - --cluster-read health
+        - local
     environment:
-      MC_HOST_health: http://localhost:9000
       MINIO_DOMAIN: s3.pc-ziegert.de,s3.pc-ziegert.dev
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
       MINIO_ROOT_USER: ${MINIO_ROOT_USER}
