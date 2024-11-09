@@ -6,7 +6,7 @@ services:
     deploy:
       resources: 
         limits: 
-          cpus: 8
+          cpus: "8"
           memory: 4096M
     cap_add: 
       - CHOWN
