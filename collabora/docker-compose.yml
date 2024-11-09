@@ -36,6 +36,8 @@ services:
       DONT_GEN_SSL_CERT: true
       TZ: Europe/Berlin
       dictionaries: de_DE en_GB en_US es_ES fr_FR it nl pt_BR pt_PT ru
+      username: ${COLLABORA_USERNAME}
+      password: ${COLLABORA_PASSWORD}
       extra_params: >-
        --o:welcome.enable=false
        --o:user_interface.mode=notebookbar
@@ -45,13 +47,9 @@ services:
        --o:logging.level=warning
        --o:logging.level_startup=warning
        --o:mount_jail_tree=false
-       --o:admin_console.username="$$(cat /var/run/secrets/username)"
-       --o:admin_console.password="$$(cat /var/run/secrets/password)"
       server_name: office.pc-ziegert.de:443
       timezone: Europe/Berlin
-    secrets:
-      - username
-      - password
+
     networks:
       - reverse-proxy
       - nextcloud
@@ -63,9 +61,3 @@ networks:
   reverse-proxy:
     external: true
     name: nginx-proxy-manager_reverse-proxy
-
-secrets:
-  username:
-    environment: "username"
-  password:
-    environment: "password"
