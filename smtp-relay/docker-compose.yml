@@ -21,6 +21,11 @@ services:
       POSTFIX_smtpd_tls_security_level: may
       POSTFIX_transport_maps: 'hash:/etc/postfix/transport'
       POSTMAP_transport: 'mail@localhost discard:'
+    secrets:
+      - source: tls_cert
+        target: /etc/pki/tls/certs/smtp-pc-ziegert-de.crt
+      - source: tls_key
+        target: /etc/pki/tls/private/smtp-pc-ziegert-de.key
     volumes:
       - type: bind
         source: /mnt/ssd/appdata/smtp-relay/data
@@ -34,12 +39,6 @@ services:
       - type: bind
         source: /mnt/ssd/appdata/smtp-relay/dkim
         target: /etc/opendkim/keys
-      - type: bind
-        source: /etc/certificates/smtp-pc-ziegert-de.key
-        target: /etc/pki/tls/private/smtp-pc-ziegert-de.key
-      - type: bind
-        source: /etc/certificates/smtp-pc-ziegert-de.crt
-        target: /etc/pki/tls/certs/smtp-pc-ziegert-de.crt
     networks:
       - reverse-proxy
     healthcheck:
@@ -57,3 +56,9 @@ networks:
   reverse-proxy:
     external: true
     name: nginx-proxy-manager_reverse-proxy
+
+secrets:
+  tls_cert:
+    file: /etc/certificates/smtp-pc-ziegert-de.crt
+  tls_key:
+    file: /etc/certificates/smtp-pc-ziegert-de.key
