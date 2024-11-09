@@ -1,3 +1,5 @@
+name: nginx-proxy-manager
+
 services:
   app:
     image: jc21/nginx-proxy-manager:2.12.1
@@ -53,6 +55,8 @@ services:
       test: ["CMD", "/usr/bin/check-health"]
       interval: 10s
       timeout: 3s
+    networks:
+      - reverse-proxy
     volumes:
       - type: bind
         source: /mnt/hdd/appdata/nginx-proxy-manager/data
@@ -62,4 +66,4 @@ services:
         target: /etc/letsencrypt
 
 networks:
-  reverse_proxy:
+  reverse-proxy:

@@ -5,24 +5,17 @@ services:
       - gotenberg
       - '--chromium-disable-javascript=true'
       - '--chromium-allow-list=file:///tmp/.*'
-    image: docker.io/gotenberg/gotenberg:8
-    ports:
-      - app_protocol: http
-        host_ip: 192.168.4.241
-        mode: ingress
-        name: http
-        protocol: tcp
-        published: 3000
-        target: 3000
+    image: docker.io/gotenberg/gotenberg:8.13
     restart: unless-stopped
+    networks:
+      - paperless-ngx
   tika:
-    image: docker.io/apache/tika:latest
-    ports:
-      - app_protocol: http
-        host_ip: 192.168.4.241
-        mode: ingress
-        name: http
-        protocol: tcp
-        published: 9998
-        target: 9998
+    image: docker.io/apache/tika:3.0.0.0
     restart: unless-stopped
+    networks:
+      - paperless-ngx
+
+networks:
+  paperless-ngx:
+      external: true
+      name: ix-paperless-ngx_default
