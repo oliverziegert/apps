@@ -28,7 +28,11 @@ services:
     networks:
       - uptime-kuma
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/v1/health"]
+      test: 
+        - CMD
+        - curl
+        - -f
+        - http://localhost:8080/v1/health
       interval: 10s
       timeout: 10s
       retries: 3
