@@ -1,0 +1,45 @@
+name: minio
+services:
+  minio:
+    user: 473:473
+    image: minio/minio:RELEASE.2024-11-07T00-52-20Z
+    restart: unless-stopped
+    command:
+      - server
+      - --console-address
+      - :9002
+      - --address
+      - :9000
+      - /export
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges
+    healthcheck:
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      test: 
+        - CMD 
+        - mc
+        - ready
+        - --insecure
+        - --cluster-read health
+    environment:
+      MC_HOST_health: http://localhost:9000
+      MINIO_DOMAIN: s3.pc-ziegert.de,s3.pc-ziegert.dev
+      MINIO_ROOT_PASSWORD: FcZzTN%Btcx$$eF8C2i#qQQPy@VDzn%jR6$$HHTQ%3
+      MINIO_ROOT_USER: 74VTYVQ9GBUW3JHDXJQ4
+      MINIO_VOLUMES: /export
+      TZ: Etc/UTC
+    volumes: 
+    - type: bind
+      source: /mnt/hdd/appdata/s3
+      target: /export
+      read_only: false
+    networks:
+      - reverse-proxy
+
+networks:
+  reverse-proxy:
+    external: true
+    name: nginx-proxy-manager_reverse-proxy

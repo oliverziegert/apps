@@ -1,3 +1,4 @@
+name: jellyfin
 services:
   jellyfin:
     cap_drop:
