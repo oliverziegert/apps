@@ -25,6 +25,7 @@ services:
         - local
     environment:
       MINIO_DOMAIN: s3.pc-ziegert.de,s3.pc-ziegert.dev
+      MINIO_BROWSER_REDIRECT_URL: https://s3-console.pc-ziegert.de
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
       MINIO_ROOT_USER: ${MINIO_ROOT_USER}
       MINIO_VOLUMES: /export
