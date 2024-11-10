@@ -1,7 +1,6 @@
 name: sabnzbd
 services:
   sabnzbd:
-    container_name: sabnzbd
     user: 568:568
     image: ghcr.io/onedr0p/sabnzbd:4.3.3
     restart: unless-stopped
@@ -38,7 +37,6 @@ services:
 
   gluetun:
     image: qmcgaw/gluetun:v3.39.1
-    container_name: gluetun
     cap_add:
       - NET_ADMIN
     devices:
