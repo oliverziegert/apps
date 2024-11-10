@@ -16,7 +16,7 @@ services:
       start_period: 10s
       test: pg_isready -h 127.0.0.1 -p 5432 -U $$POSTGRES_USER -d $$POSTGRES_DB
       timeout: 5s
-    image: postgres:15.8
+    image: postgres:17.0
     restart: unless-stopped
     user: "999:999"
     volumes:
