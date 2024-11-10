@@ -6,8 +6,8 @@ services:
     restart: unless-stopped
     volumes:
       - type: bind
-        source: /mnt/ssd/appdata/uptime-kuma/
-        target: /app/data
+        source: ${VOLUME_UPTIME_KUMA_SRC}
+        target: ${VOLUME_UPTIME_KUMA_DST}
     networks:
       - uptime-kuma
       - reverse-proxy
@@ -23,8 +23,8 @@ services:
       AUTO_RECEIVE_SCHEDULE: 5 */6 * * *
     volumes:
       - type: bind
-        source: /mnt/ssd/appdata/signal-cli
-        target: /home/.local/share/signal-cli
+        source: ${VOLUME_SIGNAL_CLI_REST_API_SRC}
+        target: ${VOLUME_SIGNAL_CLI_REST_API_DST}
     networks:
       - uptime-kuma
     healthcheck:

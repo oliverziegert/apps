@@ -4,7 +4,7 @@ services:
     cap_drop:
       - ALL
     environment:
-      JELLYFIN_PublishedServerUrl: media.pc-ziegert.de
+      JELLYFIN_PublishedServerUrl: "${JELLYFIN_PUBLISHEDSERVERURL}"
       NVIDIA_VISIBLE_DEVICES: void
       TZ: Europe/Berlin
     healthcheck:
@@ -28,36 +28,36 @@ services:
     user: '568:568'
     volumes:
       - type: bind
-        source: /mnt/hdd/appdata/jellyfin/cache
-        target: /cache
+        source: ${VOLUME_CACHE_SRC}
+        target: ${VOLUME_CACHE_DST}
         read_only: false
       - type: bind
-        source: /mnt/ssd/appdata/jellyfin
-        target: /config
+        source: ${VOLUME_CONFIG_SRC}
+        target: ${VOLUME_CONFIG_DST}
         read_only: false
       - type: bind
-        source: /mnt/hdd/appdata/jellyfin/transcode
-        target: /config/transcodes
+        source: ${VOLUME_TRANSCODES_SRC}
+        target: ${VOLUME_TRANSCODES_SDT}
         read_only: false
       - type: bind
-        source: /mnt/hdd/data/multimedia/3D
-        target: /media/3d
+        source: ${VOLUME_3D_SRC}
+        target: ${VOLUME_3D_DST}
         read_only: true
       - type: bind
-        source: /mnt/hdd/data/multimedia/Clips
-        target: /media/clips
+        source: ${VOLUME_CLIPS_SRC}
+        target: ${VOLUME_CLIPS_DST}
         read_only: true
       - type: bind
-        source: /mnt/hdd/data/multimedia/Movies
-        target: /media/movies
+        source: ${VOLUME_MOVIES_SRC}
+        target: ${VOLUME_MOVIES_DST}
         read_only: true
       - type: bind
-        source: /mnt/hdd/data/multimedia/Serien
-        target: /media/series
+        source: ${VOLUME_SERIES_SRC}
+        target: ${VOLUME_SERIES_DST}
         read_only: true
       - type: bind
-        source: /mnt/hdd/data/multimedia/TV
-        target: /media/tv
+        source: ${VOLUME_TV_SRC}
+        target: ${VOLUME_TV_DST}
         read_only: true
     networks:
       - reverse-proxy

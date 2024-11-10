@@ -27,12 +27,12 @@ services:
       TZ: Europe/Berlin
     volumes:
       - type: bind
-        source: /mnt/hdd/appdata/sabnzbd
-        target: /config
+        source: ${VOLUME_CONFIG_SRC}
+        target: ${VOLUME_CONFIG_DST}
         read_only: false
       - type: bind
-        source: /mnt/hdd/data/download
-        target: /download
+        source: ${VOLUME_DATA_SRC}
+        target: ${VOLUME_DATA_DST}
         read_only: false
     network_mode: "service:gluetun"
 

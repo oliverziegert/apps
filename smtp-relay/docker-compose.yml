@@ -5,40 +5,44 @@ services:
     restart: unless-stopped
     environment:
       TZ: Europe/Berlin
-      OPENDKIM_DOMAINS: 'pc-ziegert.de'
+      OPENDKIM_DOMAINS: ${OPENDKIM_DOMAINS}
       POSTFIX_mydestination: 'localhost'
-      POSTFIX_myhostname: smtp.pc-ziegert.de
+      POSTFIX_myhostname: ${POSTFIX_MYHOSTNAME}
       POSTFIX_mynetworks: 0.0.0.0/0
-      POSTFIX_relayhost: '[pcziegert-de0e.mail.protection.outlook.com]'
+      POSTFIX_relayhost: ${POSTFIX_RELAYHOST}
       POSTFIX_smtp_sasl_security_options: noanonymous
       POSTFIX_smtp_sasl_tls_security_options: noanonymous
       POSTFIX_smtp_tls_security_level: encrypt
       POSTFIX_smtp_use_tls: 'yes'
-      POSTFIX_smtp_tls_cert_file: /etc/pki/tls/certs/smtp-pc-ziegert-de.crt
-      POSTFIX_smtp_tls_key_file: /etc/pki/tls/private/smtp-pc-ziegert-de.key
-      POSTFIX_smtpd_tls_cert_file: /etc/pki/tls/certs/smtp-pc-ziegert-de.crt
-      POSTFIX_smtpd_tls_key_file: /etc/pki/tls/private/smtp-pc-ziegert-de.key
+      POSTFIX_smtp_tls_cert_file: /etc/pki/tls/certs/tls.crt
+      POSTFIX_smtp_tls_key_file: /etc/pki/tls/private/tls.key
+      POSTFIX_smtpd_tls_cert_file: /etc/pki/tls/certs/tls.crt
+      POSTFIX_smtpd_tls_key_file: /etc/pki/tls/private/tls.key
       POSTFIX_smtpd_tls_security_level: may
       POSTFIX_transport_maps: 'hash:/etc/postfix/transport'
       POSTMAP_transport: 'mail@localhost discard:'
     secrets:
       - source: tls_cert
-        target: /etc/pki/tls/certs/smtp-pc-ziegert-de.crt
+        target: /etc/pki/tls/certs/tls.crt
       - source: tls_key
-        target: /etc/pki/tls/private/smtp-pc-ziegert-de.key
+        target: /etc/pki/tls/private/tls.key
     volumes:
       - type: bind
-        source: /mnt/ssd/appdata/smtp-relay/data
-        target: /var/lib/postfix
+        source: ${VOLUME_DATA_SRC}
+        target: ${VOLUME_DATA_DST}
+        read_only: false
       - type: bind
-        source: /mnt/ssd/appdata/smtp-relay/mail
-        target: /var/mail
+        source: ${VOLUME_MAIL_SRC}
+        target: ${VOLUME_MAIL_DST}
+        read_only: false
       - type: bind
-        source: /mnt/ssd/appdata/smtp-relay/spool
-        target: /var/spool/postfix
+        source: ${VOLUME_SPOOL_SRC}
+        target: ${VOLUME_SPOOL_DST}
+        read_only: false
       - type: bind
-        source: /mnt/ssd/appdata/smtp-relay/dkim
-        target: /etc/opendkim/keys
+        source: ${VOLUME_DKIM_SRC}
+        target: ${VOLUME_DKIM_DST}
+        read_only: false
     networks:
       - reverse-proxy
     healthcheck:
@@ -59,6 +63,6 @@ networks:
 
 secrets:
   tls_cert:
-    file: /etc/certificates/smtp-pc-ziegert-de.crt
+    file: ${TLS_CERT}
   tls_key:
-    file: /etc/certificates/smtp-pc-ziegert-de.key
+    file: ${TLS_KEY}

@@ -10,7 +10,6 @@ services:
       - :9002
       - --address
       - :9000
-      - /export
     cap_drop: [ALL]
     security_opt:
       - no-new-privileges
@@ -24,16 +23,16 @@ services:
         - ready
         - local
     environment:
-      MINIO_DOMAIN: s3.pc-ziegert.de,s3.pc-ziegert.dev
-      MINIO_BROWSER_REDIRECT_URL: https://s3-console.pc-ziegert.de
+      MINIO_DOMAIN: ${MINIO_DOMAIN}
+      MINIO_BROWSER_REDIRECT_URL: ${MINIO_BROWSER_REDIRECT_URL}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
       MINIO_ROOT_USER: ${MINIO_ROOT_USER}
-      MINIO_VOLUMES: /export
+      MINIO_VOLUMES: ${VOLUME_DATA_DST}
       TZ: Etc/UTC
     volumes: 
     - type: bind
-      source: /mnt/hdd/appdata/s3
-      target: /export
+      source: ${VOLUME_DATA_SRC}
+      target: ${VOLUME_DATA_DST}
       read_only: false
     networks:
       - reverse-proxy

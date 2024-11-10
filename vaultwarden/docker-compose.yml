@@ -21,8 +21,8 @@ services:
     user: "999:999"
     volumes:
       - type: bind
-        source: /mnt/ssd/appdata/vaultwarden
-        target: /var/lib/postgresql/data
+        source: ${VOLUME_DB_SRC}
+        target: ${VOLUME_DB_DST}
         read_only: false
     networks:
       - vaultwarden
@@ -36,7 +36,7 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      DOMAIN: "https://vault.pc-ziegert.de"
+      DOMAIN: ${DOMAIN}
       TZ: Europe/Berlin
       ADMIN_TOKEN: "${ADMIN_TOKEN}"
       DATABASE_URL: "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?sslmode=disable"
@@ -53,8 +53,8 @@ services:
     user: "568:568"
     volumes:
       - type: bind
-        source: /mnt/hdd/appdata/vaultwarden/data
-        target: /data
+        source: ${VOLUME_DATA_SRC}
+        target: ${VOLUME_DATA_DST}
         read_only: false
     networks:
       - vaultwarden

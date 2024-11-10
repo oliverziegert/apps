@@ -47,7 +47,7 @@ services:
        --o:logging.level=warning
        --o:logging.level_startup=warning
        --o:mount_jail_tree=false
-      server_name: office.pc-ziegert.de:443
+      server_name: ${COLLABORA_SERVER_NAME}
       timezone: Europe/Berlin
     networks:
       - reverse-proxy

@@ -6,55 +6,55 @@ services:
     restart: unless-stopped
     ports:
       - name: smtp
-        target: 25
-        host_ip: 192.168.4.241
-        published: 25
+        target: ${PORT_SMTP}
+        host_ip: ${IP_PUBLISH}
+        published: ${PORT_SMTP}
         protocol: tcp
         app_protocol: smtp
         mode: ingress
       - name: http
-        target: 80
-        host_ip: 192.168.4.241
-        published: 80
+        target: ${PORT_HTTP}
+        host_ip: ${IP_PUBLISH}
+        published: ${PORT_HTTP}
         protocol: tcp
         app_protocol: http
         mode: ingress
       - name: https
-        target: 443
-        host_ip: 192.168.4.241
-        published: 443
+        target: ${PORT_HTTPS}
+        host_ip: ${IP_PUBLISH}
+        published: ${PORT_HTTPS}
         protocol: tcp
         app_protocol: http
         mode: ingress
       - name: ui
-        target: 81
-        host_ip: 192.168.4.241
-        published: 8443
+        target: ${PORT_UI}
+        host_ip: ${IP_PUBLISH}
+        published: ${PORT_UI}
         protocol: tcp
         app_protocol: http
         mode: ingress
       - name: git
-        target: 2222
-        host_ip: 192.168.4.241
-        published: 2222
+        target: ${PORT_GIT}
+        host_ip: ${IP_PUBLISH}
+        published: ${PORT_GIT}
         protocol: tcp
         app_protocol: ssh
         mode: ingress
       - name: teamspeak
-        target: 9987
-        host_ip: 192.168.4.241
-        published: 9987
+        target: ${PORT_TEAMSPEAK}
+        host_ip: ${IP_PUBLISH}
+        published: ${PORT_TEAMSPEAK}
         protocol: udp
         mode: ingress
       - name: teamspeak_sq
-        target: 10011
-        host_ip: 192.168.4.241
-        published: 10011
+        target: ${PORT_TEAMSPEAK_SQ}
+        host_ip: ${IP_PUBLISH}
+        published: ${PORT_TEAMSPEAK_SQ}
         protocol: tcp
         mode: ingress
     environment:
       TZ: Europe/Berlin
-      DB_SQLITE_FILE: /data/database.sqlite
+      DB_SQLITE_FILE: ${VOLUME_DATA_DST}/database.sqlite
       DISABLE_IPV6: 'true'
       PUID: 568
       PGID: 568
@@ -66,11 +66,11 @@ services:
       - reverse-proxy
     volumes:
       - type: bind
-        source: /mnt/hdd/appdata/nginx-proxy-manager/data
-        target: /data
+        source: ${VOLUME_DATA_SRC}
+        target: ${VOLUME_DATA_DST}
       - type: bind
-        source: /mnt/hdd/appdata/nginx-proxy-manager/cert
-        target: /etc/letsencrypt
+        source: ${VOLUME_CERT_SRC}
+        target: ${VOLUME_CERT_DST}
 
 networks:
   reverse-proxy:
