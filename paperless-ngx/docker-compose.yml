@@ -61,7 +61,7 @@ services:
       - ALL
     security_opt:
       - no-new-privileges
-    image: ghcr.io/paperless-ngx/paperless-ngx:2.13.4
+    image: ghcr.io/paperless-ngx/paperless-ngx:2.13.5
     restart: unless-stopped
     depends_on:
       broker:
