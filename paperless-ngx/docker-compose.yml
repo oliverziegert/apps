@@ -1,0 +1,152 @@
+name: paperless-ngx
+services:
+  broker:
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges
+    user: "568:568"
+    image: docker.io/library/redis:7.4.1-alpine
+    restart: unless-stopped
+    environment:
+      TZ: Europe/Berlin
+      ALLOW_EMPTY_PASSWORD: 'no'
+      REDIS_PASSWORD: "${REDIS_PASSWORD}"
+    volumes:
+      - type: bind
+        source: ${VOLUME_BROKER_SRC}
+        target: ${VOLUME_BROKER_DST}
+        read_only: false
+    healthcheck:
+      interval: 10s
+      retries: 30
+      start_period: 10s
+      test: "redis-cli -h 127.0.0.1 -p 6379 -a $$REDIS_PASSWORD ping | grep -q PONG"
+    networks:
+      - paperless-ngx
+  db:
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges
+    user: "999:999"
+    image: docker.io/library/postgres:17.0-alpine3.20
+    restart: unless-stopped
+    environment:
+      TZ: Europe/Berlin
+      POSTGRES_DB: "${POSTGRES_DB}"
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+    healthcheck:
+      interval: 10s
+      retries: 30
+      start_period: 10s
+      test: pg_isready -h 127.0.0.1 -p 5432 -U $$POSTGRES_USER -d $$POSTGRES_DB
+    volumes:
+      - type: bind
+        source: ${VOLUME_DB_SRC}
+        target: ${VOLUME_DB_DST}
+        read_only: false
+    networks:
+      - paperless-ngx
+
+  webserver:
+    cap_add:
+      - CHOWN
+      - DAC_OVERRIDE
+      - FOWNER
+      - SETGID
+      - SETUID
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges
+    image: ghcr.io/paperless-ngx/paperless-ngx:2.13.4
+    restart: unless-stopped
+    depends_on:
+      broker:
+        condition: service_healthy
+      db:
+        condition: service_healthy
+      gotenberg:
+        condition: service_healthy
+    volumes:
+      - type: bind
+        source: ${VOLUME_CONSUME_SRC}
+        target: ${VOLUME_CONSUME_DST}
+        read_only: false
+      - type: bind
+        source: ${VOLUME_DATA_SRC}
+        target: ${VOLUME_DATA_DST}
+        read_only: false
+      - type: bind
+        source: ${VOLUME_EXPORT_SRC}
+        target: ${VOLUME_EXPORT_DST}
+        read_only: false
+      - type: bind
+        source: ${VOLUME_MEDIA_SRC}
+        target: ${VOLUME_MEDIA_DST}
+        read_only: false
+      - type: bind
+        source: ${VOLUME_TRASH_SRC}
+        target: ${VOLUME_TRASH_DST}
+        read_only: false
+    healthcheck:
+      interval: 10s
+      retries: 30
+      start_period: 10s
+      test: "curl --silent --output /dev/null --show-error --fail http://127.0.0.1:8000/"
+      timeout: 5s
+    environment:
+      TZ: Europe/Berlin
+      USERMAP_GID: "568"
+      USERMAP_UID: "568"
+      PAPERLESS_REDIS: "redis://default:${REDIS_PASSWORD}@broker:6379"
+      PAPERLESS_DBHOST: db
+      PAPERLESS_DBPORT: '5432'
+      PAPERLESS_DBNAME: "${POSTGRES_DB}"
+      PAPERLESS_DBUSER: "${POSTGRES_USER}"
+      PAPERLESS_DBPASS: "${POSTGRES_PASSWORD}"
+      PAPERLESS_URL: "${PAPERLESS_URL}"
+      PAPERLESS_OCR_LANGUAGE: deu+eng
+      PAPERLESS_TIME_ZONE: Europe/Berlin
+      PAPERLESS_TRASH_DIR: ${VOLUME_TRASH_DST}
+      PAPERLESS_MEDIA_ROOT: ${VOLUME_MEDIA_DST}
+      PAPERLESS_CONSUMPTION_DIR: ${VOLUME_CONSUME_DST}
+      PAPERLESS_DATA_DIR: ${VOLUME_DATA_DST}
+      PAPERLESS_SECRET_KEY: "${PAPERLESS_SECRET_KEY}"
+      PAPERLESS_TIKA_ENABLED: 'true'
+      PAPERLESS_TIKA_GOTENBERG_ENDPOINT: http://gotenberg:3000
+      PAPERLESS_TIKA_ENDPOINT: http://tika:9998
+    networks:
+      - paperless-ngx
+      - reverse-proxy
+
+  gotenberg:
+    command:
+      - gotenberg
+      - '--chromium-disable-javascript=true'
+      - '--chromium-allow-list=file:///tmp/.*'
+    image: docker.io/gotenberg/gotenberg:8.13
+    restart: unless-stopped
+    networks:
+      - paperless-ngx
+    healthcheck:
+      interval: 10s
+      retries: 3
+      start_period: 5s
+      test: "curl --head --silent --output /dev/null --show-error --fail http://127.0.0.1:3000/health"
+
+  tika:
+    image: docker.io/apache/tika:3.0.0.0
+    restart: unless-stopped
+    networks:
+      - paperless-ngx
+    healthcheck:
+      disable: true
+
+networks:
+  paperless-ngx:
+  reverse-proxy:
+    external: true
+    name: nginx-proxy-manager_reverse-proxy

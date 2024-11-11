@@ -1,0 +1,69 @@
+name: jellyfin
+services:
+  jellyfin:
+    cap_drop:
+      - ALL
+    environment:
+      JELLYFIN_PublishedServerUrl: "${JELLYFIN_PUBLISHEDSERVERURL}"
+      NVIDIA_VISIBLE_DEVICES: void
+      TZ: Europe/Berlin
+    healthcheck:
+      interval: 10s
+      retries: 30
+      start_period: 10s
+      test:
+        - CMD
+        - curl
+        - --silent
+        - --output
+        - /dev/null
+        - --show-error
+        - --fail
+        - http://127.0.0.1:8096/health
+      timeout: 5s
+    image: jellyfin/jellyfin:10.10.1
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges
+    user: '568:568'
+    volumes:
+      - type: bind
+        source: ${VOLUME_CACHE_SRC}
+        target: ${VOLUME_CACHE_DST}
+        read_only: false
+      - type: bind
+        source: ${VOLUME_CONFIG_SRC}
+        target: ${VOLUME_CONFIG_DST}
+        read_only: false
+      - type: bind
+        source: ${VOLUME_TRANSCODES_SRC}
+        target: ${VOLUME_TRANSCODES_SDT}
+        read_only: false
+      - type: bind
+        source: ${VOLUME_3D_SRC}
+        target: ${VOLUME_3D_DST}
+        read_only: true
+      - type: bind
+        source: ${VOLUME_CLIPS_SRC}
+        target: ${VOLUME_CLIPS_DST}
+        read_only: true
+      - type: bind
+        source: ${VOLUME_MOVIES_SRC}
+        target: ${VOLUME_MOVIES_DST}
+        read_only: true
+      - type: bind
+        source: ${VOLUME_SERIES_SRC}
+        target: ${VOLUME_SERIES_DST}
+        read_only: true
+      - type: bind
+        source: ${VOLUME_TV_SRC}
+        target: ${VOLUME_TV_DST}
+        read_only: true
+    networks:
+      - reverse-proxy
+
+networks:
+  reverse-proxy:
+    external: true
+    name: nginx-proxy-manager_reverse-proxy
+

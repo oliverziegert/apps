@@ -1,0 +1,68 @@
+name: smtp-relay
+services:
+  postfix-relay:
+    image: mwader/postfix-relay:1.1.39
+    restart: unless-stopped
+    environment:
+      TZ: Europe/Berlin
+      OPENDKIM_DOMAINS: ${OPENDKIM_DOMAINS}
+      POSTFIX_mydestination: 'localhost'
+      POSTFIX_myhostname: ${POSTFIX_MYHOSTNAME}
+      POSTFIX_mynetworks: 0.0.0.0/0
+      POSTFIX_relayhost: ${POSTFIX_RELAYHOST}
+      POSTFIX_smtp_sasl_security_options: noanonymous
+      POSTFIX_smtp_sasl_tls_security_options: noanonymous
+      POSTFIX_smtp_tls_security_level: encrypt
+      POSTFIX_smtp_use_tls: 'yes'
+      POSTFIX_smtp_tls_cert_file: /etc/pki/tls/certs/tls.crt
+      POSTFIX_smtp_tls_key_file: /etc/pki/tls/private/tls.key
+      POSTFIX_smtpd_tls_cert_file: /etc/pki/tls/certs/tls.crt
+      POSTFIX_smtpd_tls_key_file: /etc/pki/tls/private/tls.key
+      POSTFIX_smtpd_tls_security_level: may
+      POSTFIX_transport_maps: 'hash:/etc/postfix/transport'
+      POSTMAP_transport: 'mail@localhost discard:'
+    secrets:
+      - source: tls_cert
+        target: /etc/pki/tls/certs/tls.crt
+      - source: tls_key
+        target: /etc/pki/tls/private/tls.key
+    volumes:
+      - type: bind
+        source: ${VOLUME_DATA_SRC}
+        target: ${VOLUME_DATA_DST}
+        read_only: false
+      - type: bind
+        source: ${VOLUME_MAIL_SRC}
+        target: ${VOLUME_MAIL_DST}
+        read_only: false
+      - type: bind
+        source: ${VOLUME_SPOOL_SRC}
+        target: ${VOLUME_SPOOL_DST}
+        read_only: false
+      - type: bind
+        source: ${VOLUME_DKIM_SRC}
+        target: ${VOLUME_DKIM_DST}
+        read_only: false
+    networks:
+      - reverse-proxy
+    healthcheck:
+      test:
+        - CMD
+        - postfix
+        - status
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+      start_interval: 5s
+
+networks:
+  reverse-proxy:
+    external: true
+    name: nginx-proxy-manager_reverse-proxy
+
+secrets:
+  tls_cert:
+    file: ${TLS_CERT}
+  tls_key:
+    file: ${TLS_KEY}

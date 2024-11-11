@@ -1,0 +1,58 @@
+name: sabnzbd
+services:
+  sabnzbd:
+    user: 568:568
+    image: ghcr.io/onedr0p/sabnzbd:4.3.3
+    restart: unless-stopped
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges
+    healthcheck:
+      interval: 10s
+      retries: 30
+      start_period: 10s
+      test: 
+        - CMD
+        - curl
+        - --silent
+        - --output
+        - /dev/null
+        - --show-error
+        - --fail
+        - http://127.0.0.1:8080/api?mode=version
+      timeout: 5s
+    environment:
+      TZ: Europe/Berlin
+    volumes:
+      - type: bind
+        source: ${VOLUME_CONFIG_SRC}
+        target: ${VOLUME_CONFIG_DST}
+        read_only: false
+      - type: bind
+        source: ${VOLUME_DATA_SRC}
+        target: ${VOLUME_DATA_DST}
+        read_only: false
+    network_mode: "service:gluetun"
+
+  gluetun:
+    image: qmcgaw/gluetun:v3.39.1
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    environment:
+      TZ: Europe/Berlin
+      VPN_SERVICE_PROVIDER: "${VPN_SERVICE_PROVIDER}"
+      VPN_TYPE: "${VPN_TYPE}"
+      OPENVPN_USER: "${OPENVPN_USER}"
+      OPENVPN_PASSWORD: "${OPENVPN_PASSWORD}"
+      SERVER_COUNTRIES: "${SERVER_COUNTRIES}"
+      FREE_ONLY: "${FREE_ONLY}"
+    networks:
+      - reverse-proxy
+
+networks:
+  reverse-proxy:
+    external: true
+    name: nginx-proxy-manager_reverse-proxy

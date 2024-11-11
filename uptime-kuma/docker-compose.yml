@@ -1,0 +1,46 @@
+name: uptime-kuma
+services:
+  uptime-kuma:
+    image: louislam/uptime-kuma:1.23.15
+    pull_policy: missing
+    restart: unless-stopped
+    volumes:
+      - type: bind
+        source: ${VOLUME_UPTIME_KUMA_SRC}
+        target: ${VOLUME_UPTIME_KUMA_DST}
+    networks:
+      - uptime-kuma
+      - reverse-proxy
+  signal-cli-rest-api:
+    image: bbernhard/signal-cli-rest-api:0.89
+    pull_policy: missing
+    restart: unless-stopped
+    environment:
+      MODE: normal
+      SIGNAL_CLI_UID: 568
+      SIGNAL_CLI_GID: 568
+      PORT: 8080
+      AUTO_RECEIVE_SCHEDULE: 5 */6 * * *
+    volumes:
+      - type: bind
+        source: ${VOLUME_SIGNAL_CLI_REST_API_SRC}
+        target: ${VOLUME_SIGNAL_CLI_REST_API_DST}
+    networks:
+      - uptime-kuma
+    healthcheck:
+      test: 
+        - CMD
+        - curl
+        - -f
+        - http://localhost:8080/v1/health
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+      start_interval: 5s
+
+networks:
+  uptime-kuma:
+  reverse-proxy:
+    external: true
+    name: nginx-proxy-manager_reverse-proxy

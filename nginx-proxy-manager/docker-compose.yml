@@ -1,0 +1,76 @@
+name: nginx-proxy-manager
+
+services:
+  app:
+    image: jc21/nginx-proxy-manager:2.12.1
+    restart: unless-stopped
+    ports:
+      - name: smtp
+        target: ${PORT_SMTP}
+        host_ip: ${IP_PUBLISH}
+        published: ${PORT_SMTP}
+        protocol: tcp
+        app_protocol: smtp
+        mode: ingress
+      - name: http
+        target: ${PORT_HTTP}
+        host_ip: ${IP_PUBLISH}
+        published: ${PORT_HTTP}
+        protocol: tcp
+        app_protocol: http
+        mode: ingress
+      - name: https
+        target: ${PORT_HTTPS}
+        host_ip: ${IP_PUBLISH}
+        published: ${PORT_HTTPS}
+        protocol: tcp
+        app_protocol: http
+        mode: ingress
+      - name: ui
+        target: ${PORT_UI}
+        host_ip: ${IP_PUBLISH}
+        published: ${PORT_UI}
+        protocol: tcp
+        app_protocol: http
+        mode: ingress
+      - name: git
+        target: ${PORT_GIT}
+        host_ip: ${IP_PUBLISH}
+        published: ${PORT_GIT}
+        protocol: tcp
+        app_protocol: ssh
+        mode: ingress
+      - name: teamspeak
+        target: ${PORT_TEAMSPEAK}
+        host_ip: ${IP_PUBLISH}
+        published: ${PORT_TEAMSPEAK}
+        protocol: udp
+        mode: ingress
+      - name: teamspeak_sq
+        target: ${PORT_TEAMSPEAK_SQ}
+        host_ip: ${IP_PUBLISH}
+        published: ${PORT_TEAMSPEAK_SQ}
+        protocol: tcp
+        mode: ingress
+    environment:
+      TZ: Europe/Berlin
+      DB_SQLITE_FILE: ${VOLUME_DATA_DST}/database.sqlite
+      DISABLE_IPV6: 'true'
+      PUID: 568
+      PGID: 568
+    healthcheck:
+      test: ["CMD", "/usr/bin/check-health"]
+      interval: 10s
+      timeout: 3s
+    networks:
+      - reverse-proxy
+    volumes:
+      - type: bind
+        source: ${VOLUME_DATA_SRC}
+        target: ${VOLUME_DATA_DST}
+      - type: bind
+        source: ${VOLUME_CERT_SRC}
+        target: ${VOLUME_CERT_DST}
+
+networks:
+  reverse-proxy:
