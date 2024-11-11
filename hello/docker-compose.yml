@@ -1,0 +1,37 @@
+name: hello
+services:
+  s3www:
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges
+    environment:
+      TZ: Europe/Berlin
+      S3WWW_ENDPOINT: ${S3WWW_ENDPOINT}
+      S3WWW_BUCKET: ${S3WWW_BUCKET}
+      S3WWW_ADDRESS: ${S3WWW_ADDRESS}
+      S3WWW_ACCESS_KEY_FILE: /run/secrets/access_key
+      S3WWW_SECRET_KEY_FILE: /run/secrets/secret_key
+      S3WWW_SPA_FILE: ${S3WWW_SPA_FILE}
+      S3WWW_ALLOWED_CORS_ORIGINS: ${S3WWW_ALLOWED_CORS_ORIGINS}
+    secrets:
+      - source: access_key
+        target: access_key
+      - source: secret_key
+        target: secret_key
+    image: y4m4/s3www:v0.9.0
+    restart: unless-stopped
+    user: '65534:65534'
+    networks:
+      - reverse-proxy
+
+networks:
+  reverse-proxy:
+    external: true
+    name: nginx-proxy-manager_reverse-proxy
+
+secrets:
+  access_key:
+    environment: S3WWW_ACCESS_KEY
+  secret_key:
+    environment: S3WWW_SECRET_KEY
