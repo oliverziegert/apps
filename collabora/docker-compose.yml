@@ -1,0 +1,58 @@
+name: collabora
+services:
+  collabora:
+    image: collabora/code:24.04.9.2.1
+    restart: unless-stopped
+    deploy:
+      resources: 
+        limits: 
+          memory: 4096M
+    cap_add: 
+      - CHOWN
+      - FOWNER
+      - DAC_OVERRIDE
+      - SETGID
+      - SETUID
+      - SETFCAP
+      - SYS_CHROOT
+      - MKNOD
+    cap_drop: 
+      - ALL
+    healthcheck: 
+      interval: 10s
+      retries: 30
+      start_period: 10s
+      test: 
+        - CMD
+        - curl
+        - --silent
+        - --output
+        - /dev/null
+        - --show-error
+        - --fail
+        - http://127.0.0.1:9980/
+      timeout: 5s
+    environment:
+      DONT_GEN_SSL_CERT: true
+      TZ: Europe/Berlin
+      dictionaries: de_DE en_GB en_US es_ES fr_FR it nl pt_BR pt_PT ru
+      username: ${COLLABORA_USERNAME}
+      password: ${COLLABORA_PASSWORD}
+      extra_params: >-
+       --o:welcome.enable=false
+       --o:user_interface.mode=notebookbar
+       --o:ssl.termination=true
+       --o:ssl.enable=false
+       --o:net.proto=IPv4
+       --o:logging.level=warning
+       --o:logging.level_startup=warning
+       --o:mount_jail_tree=false
+      server_name: ${COLLABORA_SERVER_NAME}
+      timezone: Europe/Berlin
+    networks:
+      - reverse-proxy
+
+networks:
+  reverse-proxy:
+    external: true
+    name: nginx-proxy-manager_reverse-proxy
