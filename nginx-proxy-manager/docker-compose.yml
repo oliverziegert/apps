@@ -14,9 +14,11 @@ services:
       test: ["CMD", "/usr/bin/check-health"]
       interval: 10s
       timeout: 3s
+    dns:
+      - ${GATEWAY}
     networks:
-      - reverse-proxy
       - reverse-proxy-external
+      - reverse-proxy
     volumes:
       - type: bind
         source: ${VOLUME_DATA_SRC}
