@@ -26,6 +26,9 @@ services:
       - type: bind
         source: ${VOLUME_CERT_SRC}
         target: ${VOLUME_CERT_DST}
+      - type: bind
+        source: ${VOLUME_LOGS_SRC}
+        target: ${VOLUME_LOGS_DST}
 
 networks:
   reverse-proxy:
