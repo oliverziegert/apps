@@ -252,7 +252,7 @@ services:
     restart: unless-stopped
     user: 65534:65534
     environment:
-      NEXTCLOUD_URL: http://nextcloud
+      NEXTCLOUD_URL: https://${DOMAIN}
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
       STORAGE_STRATEGY: redis
       REDIS_URL: redis://default:${REDIS_PASSWORD}@redis:6379/1
