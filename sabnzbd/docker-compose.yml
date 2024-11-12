@@ -50,9 +50,11 @@ services:
       SERVER_COUNTRIES: "${SERVER_COUNTRIES}"
       FREE_ONLY: "${FREE_ONLY}"
     networks:
+      - sabnzbd
       - reverse-proxy
 
 networks:
+  sabnzbd:
   reverse-proxy:
     external: true
     name: nginx-proxy-manager_reverse-proxy

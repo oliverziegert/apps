@@ -1,57 +1,9 @@
 name: nginx-proxy-manager
 
 services:
-  app:
+  nginx-proxy-manager:
     image: jc21/nginx-proxy-manager:2.12.1
     restart: unless-stopped
-    ports:
-      - name: smtp
-        target: ${PORT_SMTP}
-        host_ip: ${IP_PUBLISH}
-        published: ${PORT_SMTP}
-        protocol: tcp
-        app_protocol: smtp
-        mode: ingress
-      - name: http
-        target: ${PORT_HTTP}
-        host_ip: ${IP_PUBLISH}
-        published: ${PORT_HTTP}
-        protocol: tcp
-        app_protocol: http
-        mode: ingress
-      - name: https
-        target: ${PORT_HTTPS}
-        host_ip: ${IP_PUBLISH}
-        published: ${PORT_HTTPS}
-        protocol: tcp
-        app_protocol: http
-        mode: ingress
-      - name: ui
-        target: ${PORT_UI}
-        host_ip: ${IP_PUBLISH}
-        published: ${PORT_UI}
-        protocol: tcp
-        app_protocol: http
-        mode: ingress
-      - name: git
-        target: ${PORT_GIT}
-        host_ip: ${IP_PUBLISH}
-        published: ${PORT_GIT}
-        protocol: tcp
-        app_protocol: ssh
-        mode: ingress
-      - name: teamspeak
-        target: ${PORT_TEAMSPEAK}
-        host_ip: ${IP_PUBLISH}
-        published: ${PORT_TEAMSPEAK}
-        protocol: udp
-        mode: ingress
-      - name: teamspeak_sq
-        target: ${PORT_TEAMSPEAK_SQ}
-        host_ip: ${IP_PUBLISH}
-        published: ${PORT_TEAMSPEAK_SQ}
-        protocol: tcp
-        mode: ingress
     environment:
       TZ: Europe/Berlin
       DB_SQLITE_FILE: ${VOLUME_DATA_DST}/database.sqlite
@@ -64,6 +16,7 @@ services:
       timeout: 3s
     networks:
       - reverse-proxy
+      - reverse-proxy-external
     volumes:
       - type: bind
         source: ${VOLUME_DATA_SRC}
@@ -74,3 +27,14 @@ services:
 
 networks:
   reverse-proxy:
+    driver: bridge
+    internal: true
+  reverse-proxy-external:
+    driver: macvlan
+    driver_opts:
+      parent: ${PARENT_INTERFACE}
+    ipam:
+      config:
+        - subnet: ${SUBNET}
+          ip_range: ${IP_PUBLIC}/32
+          gateway: ${GATEWAY}
