@@ -50,9 +50,11 @@ services:
       server_name: ${COLLABORA_SERVER_NAME}
       timezone: Europe/Berlin
     networks:
+      - collabora
       - reverse-proxy
 
 networks:
+  collabora: {}
   reverse-proxy:
     external: true
     name: nginx-proxy-manager_reverse-proxy
