@@ -38,3 +38,4 @@ networks:
       config:
         - subnet: ${SUBNET}
           ip_range: ${IP_PUBLIC}/32
+          gateway: ${GATEWAY}
