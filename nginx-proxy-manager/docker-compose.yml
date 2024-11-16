@@ -14,8 +14,6 @@ services:
       test: ["CMD", "/usr/bin/check-health"]
       interval: 10s
       timeout: 3s
-    dns:
-      - ${GATEWAY}
     networks:
       - reverse-proxy-external
       - reverse-proxy
@@ -32,8 +30,6 @@ services:
 
 networks:
   reverse-proxy:
-    driver: bridge
-    internal: true
   reverse-proxy-external:
     driver: macvlan
     driver_opts:
@@ -42,4 +38,3 @@ networks:
       config:
         - subnet: ${SUBNET}
           ip_range: ${IP_PUBLIC}/32
-          gateway: ${GATEWAY}
