@@ -14,8 +14,48 @@ services:
       test: ["CMD", "/usr/bin/check-health"]
       interval: 10s
       timeout: 3s
+    ports:
+      - name: smtp
+        target: ${PORT_SMTP}
+        published: ${PORT_SMTP}
+        protocol: tcp
+        app_protocol: smtp
+        mode: ingress
+      - name: http
+        target: ${PORT_HTTP}
+        published: ${PORT_HTTP}
+        protocol: tcp
+        app_protocol: http
+        mode: ingress
+      - name: https
+        target: ${PORT_HTTPS}
+        published: ${PORT_HTTPS}
+        protocol: tcp
+        app_protocol: http
+        mode: ingress
+      - name: ui
+        target: ${PORT_UI}
+        published: ${PORT_UI}
+        protocol: tcp
+        app_protocol: http
+        mode: ingress
+      - name: git
+        target: ${PORT_GIT}
+        published: ${PORT_GIT}
+        protocol: tcp
+        app_protocol: ssh
+        mode: ingress
+      - name: teamspeak
+        target: ${PORT_TEAMSPEAK}
+        published: ${PORT_TEAMSPEAK}
+        protocol: udp
+        mode: ingress
+      - name: teamspeak_sq
+        target: ${PORT_TEAMSPEAK_SQ}
+        published: ${PORT_TEAMSPEAK_SQ}
+        protocol: tcp
+        mode: ingress
     networks:
-      - reverse-proxy-external
       - reverse-proxy
     volumes:
       - type: bind
@@ -30,12 +70,3 @@ services:
 
 networks:
   reverse-proxy:
-  reverse-proxy-external:
-    driver: macvlan
-    driver_opts:
-      parent: ${PARENT_INTERFACE}
-    ipam:
-      config:
-        - subnet: ${SUBNET}
-          ip_range: ${IP_PUBLIC}/32
-          gateway: ${GATEWAY}
