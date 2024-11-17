@@ -264,7 +264,7 @@ networks:
   nextcloud: {}
   reverse-proxy:
     external: true
-    name: nginx-proxy-manager_reverse-proxy
+    name: reverse-proxy
 
 secrets:
   nextcloud_admin_user:

@@ -57,4 +57,4 @@ networks:
   collabora: {}
   reverse-proxy:
     external: true
-    name: nginx-proxy-manager_reverse-proxy
+    name: reverse-proxy

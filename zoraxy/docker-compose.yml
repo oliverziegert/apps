@@ -1,0 +1,74 @@
+services:
+  zoraxy:
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges
+    user: "568:568"
+    image: zoraxydocker/zoraxy:v3.1.3
+    restart: unless-stopped
+    ports:
+      - name: smtp
+        target: ${PORT_SMTP}
+        published: ${PORT_SMTP}
+        protocol: tcp
+        app_protocol: smtp
+        mode: ingress
+      - name: http
+        target: ${PORT_HTTP}
+        published: ${PORT_HTTP}
+        protocol: tcp
+        app_protocol: http
+        mode: ingress
+      - name: https
+        target: ${PORT_HTTPS}
+        published: ${PORT_HTTPS}
+        protocol: tcp
+        app_protocol: http
+        mode: ingress
+      - name: ui
+        target: ${PORT_UI}
+        published: ${PORT_UI}
+        protocol: tcp
+        app_protocol: http
+        mode: ingress
+      - name: git
+        target: ${PORT_GIT}
+        published: ${PORT_GIT}
+        protocol: tcp
+        app_protocol: ssh
+        mode: ingress
+      - name: teamspeak
+        target: ${PORT_TEAMSPEAK}
+        published: ${PORT_TEAMSPEAK}
+        protocol: udp
+        mode: ingress
+      - name: teamspeak_sq
+        target: ${PORT_TEAMSPEAK_SQ}
+        published: ${PORT_TEAMSPEAK_SQ}
+        protocol: tcp
+        mode: ingress
+    volumes:
+      - type: bind
+        source: ${VOLUME_CONFIG_SRC}
+        target: ${VOLUME_CONFIG_DST}
+      - type: bind
+        source: ${VOLUME_LOG_SRC}
+        target: ${VOLUME_LOG_DST}
+      - type: bind
+        source: ${VOLUME_DOCKER_SRC}
+        target: ${VOLUME_DOCKER_DST}
+      - type: bind
+        source: ${VOLUME_TIME_SRC}
+        target: ${VOLUME_TIME_DST}
+        read_only: true
+    environment:
+      EARLYRENEW: "${EARLYRENEW}"
+      PORT: "${PORT_UI}"
+      FASTGEOIP: "${FASTGEOIP}"
+    networks:
+       reverse-proxy:
+
+networks:
+  reverse-proxy:
+    name: reverse-proxy
