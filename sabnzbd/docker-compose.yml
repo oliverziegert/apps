@@ -2,7 +2,7 @@ name: sabnzbd
 services:
   sabnzbd:
     user: 568:568
-    image: ghcr.io/onedr0p/sabnzbd:4.3.3
+    image: ghcr.io/onedr0p/sabnzbd:4.4.0
     restart: unless-stopped
     cap_drop:
       - ALL
