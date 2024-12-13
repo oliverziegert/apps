@@ -39,10 +39,3 @@ services:
       source: ${VOLUME_DATA_SRC}
       target: ${VOLUME_DATA_DST}
       read_only: false
-    networks:
-      - reverse-proxy
-
-networks:
-  reverse-proxy:
-    external: true
-    name: reverse-proxy
