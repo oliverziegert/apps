@@ -1,0 +1,37 @@
+name: teamspeak3
+services:
+  teamspeak3:
+    user: 9987:9987
+    image: docker.io/library/teamspeak:3.13.7
+    restart: unless-stopped
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges
+    healthcheck:
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      test: 
+        - "CMD"
+        - "nc"
+        - "-vz"
+        - "-w1"
+        - "127.0.0.1"
+        - "10011"
+    environment:
+      TS3SERVER_LICENSE: ${TS3SERVER_LICENSE}
+      SERVERQUERY_PASSWORD: ${SERVERQUERY_PASSWORD}
+      TS3SERVER_SERVERADMIN_PASSWORD: ${TS3SERVER_SERVERADMIN_PASSWORD}
+      TZ: Etc/UTC
+    volumes: 
+    - type: bind
+      source: ${VOLUME_DATA_SRC}
+      target: ${VOLUME_DATA_DST}
+      read_only: false
+    networks:
+      - reverse-proxy
+
+networks:
+  reverse-proxy:
+    external: true
+    name: reverse-proxy
