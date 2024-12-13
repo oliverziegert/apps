@@ -23,6 +23,17 @@ services:
       SERVERQUERY_PASSWORD: ${SERVERQUERY_PASSWORD}
       TS3SERVER_SERVERADMIN_PASSWORD: ${TS3SERVER_SERVERADMIN_PASSWORD}
       TZ: Etc/UTC
+    ports:
+      - name: teamspeak_voice
+        target: ${PORT_TEAMSPEAK}
+        published: ${PORT_TEAMSPEAK}
+        protocol: udp
+        mode: ingress
+      - name: teamspeak_sq
+        target: ${PORT_TEAMSPEAK_SQ}
+        published: ${PORT_TEAMSPEAK_SQ}
+        protocol: tcp
+        mode: ingress
     volumes: 
     - type: bind
       source: ${VOLUME_DATA_SRC}
