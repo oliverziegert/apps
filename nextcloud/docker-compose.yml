@@ -59,7 +59,7 @@ services:
       - source: redis.conf
         target: /etc/redis/redis.conf
     user: "568:568"
-    image: docker.io/library/redis:7.4.1-alpine
+    image: docker.io/library/redis:7.4.2-alpine
     command: 
       - redis-server
       - /etc/redis/redis.conf
