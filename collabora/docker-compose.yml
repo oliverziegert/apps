@@ -1,7 +1,7 @@
 name: collabora
 services:
   collabora:
-    image: collabora/code:24.04.11.1.1
+    image: collabora/code:24.04.11.2.1
     restart: unless-stopped
     deploy:
       resources: 
