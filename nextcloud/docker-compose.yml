@@ -121,7 +121,7 @@ services:
         target: /usr/local/etc/php/conf.d/opcache-z-99.ini
       - source: php.ini
         target: /usr/local/etc/php/conf.d/nextcloud-z-99.ini
-    image: docker.io/library/nextcloud:30.0.4
+    image: docker.io/library/nextcloud:30.0.5
     depends_on:
       db:
         condition: service_healthy
@@ -218,7 +218,7 @@ services:
       - ALL
     security_opt:
       - no-new-privileges
-    image: docker.io/library/nextcloud:30.0.4
+    image: docker.io/library/nextcloud:30.0.5
     restart: unless-stopped
     user: 33:33
     depends_on:
