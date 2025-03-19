@@ -1,0 +1,164 @@
+name: n8n
+#configs:
+#  valkey.conf:
+#    content:  requirepass ${BROKER_PASSWORD}
+
+x-shared: &shared
+  cap_drop:
+    - ALL
+  security_opt:
+    - no-new-privileges
+  restart: always
+  user: "1000:1000"
+  image: docker.n8n.io/n8nio/n8n:1.83.2
+  environment:
+    GENERIC_TIMEZONE: Europe/Berlin
+    DB_TYPE: postgresdb
+    DB_POSTGRESDB_HOST: db
+    DB_POSTGRESDB_PORT: 5432
+    DB_POSTGRESDB_DATABASE_FILE: /run/secrets/postgres_db
+    DB_POSTGRESDB_USER_FILE: /run/secrets/postgres_user
+    DB_POSTGRESDB_PASSWORD_FILE: /run/secrets/postgres_password
+#    EXECUTIONS_MODE: queue
+#    QUEUE_BULL_REDIS_HOST: broker
+#    QUEUE_BULL_REDIS_PORT: 6379
+#    QUEUE_HEALTH_CHECK_ACTIVE: true
+#    QUEUE_BULL_REDIS_PASSWORD_FILE: /run/secrets/valkey_password
+    N8N_RUNNERS_ENABLED: 'true'
+#    N8N_RUNNERS_MODE: 'external'
+#    OFFLOAD_MANUAL_EXECUTIONS_TO_WORKERS: 'true'
+#    N8N_RUNNERS_AUTH_TOKEN_FILE: /run/secrets/n8n_runners_auth_token_file
+    N8N_ENCRYPTION_KEY_FILE: /run/secrets/n8n_encryption_key
+    N8N_EDITOR_BASE_URL: ${N8N_EDITOR_BASE_URL}
+    N8N_HOST: ${N8N_HOST}
+    N8N_PROTOCOL: https
+    WEBHOOK_URL: ${N8N_WEBHOOK_URL}
+    N8N_PROXY_HOPS: 1
+  volumes:
+    - type: bind
+      source: ${VOLUME_N8N_SRC}
+      target: ${VOLUME_N8N_DST}
+      read_only: false
+  depends_on:
+#    broker:
+#      condition: service_healthy
+    db:
+      condition: service_healthy
+  secrets:
+    - source: postgres_db
+      target: postgres_db
+    - source: postgres_user
+      target: postgres_user
+    - source: postgres_password
+      target: postgres_password
+#    - source: valkey_password
+#      target: valkey_password
+    - source: n8n_encryption_key
+      target: n8n_encryption_key
+#    - source: n8n_runners_auth_token_file
+#      target: n8n_runners_auth_token_file
+  networks:
+    - n8n
+
+services:
+  db:
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges
+    user: "999:999"
+    image: docker.io/library/postgres:17.4-alpine3.21
+    restart: unless-stopped
+    environment:
+      TZ: Europe/Berlin
+      POSTGRES_DB_FILE: /run/secrets/postgres_db
+      POSTGRES_USER_FILE: /run/secrets/postgres_user
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+    healthcheck:
+      test: 
+        - CMD-SHELL
+        - pg_isready -d `cat $$POSTGRES_DB_FILE` -U `cat $$POSTGRES_USER_FILE`
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - type: bind
+        source: ${VOLUME_DB_SRC}
+        target: ${VOLUME_DB_DST}
+        read_only: false
+    secrets:
+      - source: postgres_db
+        target: postgres_db
+      - source: postgres_user
+        target: postgres_user
+      - source: postgres_password
+        target: postgres_password
+    networks:
+      - n8n
+
+#  broker:
+#    cap_drop:
+#      - ALL
+#    security_opt:
+#      - no-new-privileges
+#    configs:
+#      - source: valkey.conf
+#        target: /etc/valkey/valkey.conf
+#    user: "568:568"
+#    image: docker.io/valkey/valkey:8.0.2-alpine3.21
+#    command: 
+#      - valkey-server
+#      - /etc/valkey/valkey.conf
+#    restart: unless-stopped
+#    environment:
+#      TZ: Europe/Berlin
+#    volumes:
+#      - type: bind
+#        source: ${VOLUME_BROKER_SRC}
+#        target: ${VOLUME_BROKER_DST}
+#        read_only: false
+#    healthcheck:
+#      test: "valkey-cli -h 127.0.0.1 -p 6379 -a ${BROKER_PASSWORD} ping | grep -q PONG"
+#      interval: 5s
+#      timeout: 5s
+#      retries: 10
+#    networks:
+#      - n8n
+
+  n8n:
+    <<: *shared
+    networks:
+      - n8n
+      - reverse-proxy
+
+#  n8n-worker:
+#    <<: *shared
+#    command: worker
+#    depends_on:
+#      - n8n
+#    environment:
+#      N8N_ENCRYPTION_KEY: ${N8N_ENCRYPTION_KEY}
+
+networks:
+  n8n: {}
+  reverse-proxy:
+    external: true
+    name: reverse-proxy
+
+secrets:
+  nextcloud_admin_user:
+    environment: NEXTCLOUD_ADMIN_USER
+  nextcloud_admin_password:
+    environment: NEXTCLOUD_ADMIN_PASSWORD
+  postgres_db:
+    environment: POSTGRES_DB
+  postgres_user:
+    environment: POSTGRES_USER
+  postgres_password:
+    environment: POSTGRES_PASSWORD
+#  valkey_password:
+#    environment: BROKER_PASSWORD
+  n8n_encryption_key:
+    environment: N8N_ENCRYPTION_KEY
+#  n8n_runners_auth_token_file:
+#    environment: N8N_RUNNERS_AUTH_TOKEN
