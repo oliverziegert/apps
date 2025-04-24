@@ -42,6 +42,8 @@ services:
       DATABASE_URL: "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?sslmode=disable"
       WEBSOCKET_ENABLED: "true"
       SIGNUPS_ALLOWED: "false"
+      ROCKET_ADDRESS: '::'
+      WEBSOCKET_ADDRESS: '::'
     healthcheck:
       interval: 10s
       retries: 30
