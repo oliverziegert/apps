@@ -29,6 +29,7 @@ x-shared: &shared
 #    OFFLOAD_MANUAL_EXECUTIONS_TO_WORKERS: 'true'
 #    N8N_RUNNERS_AUTH_TOKEN_FILE: /run/secrets/n8n_runners_auth_token_file
     N8N_ENCRYPTION_KEY_FILE: /run/secrets/n8n_encryption_key
+    N8N_LISTEN_ADDRESS: '::'
     N8N_EDITOR_BASE_URL: ${N8N_EDITOR_BASE_URL}
     N8N_HOST: ${N8N_HOST}
     N8N_PROTOCOL: https
