@@ -4,7 +4,7 @@ services:
       - ALL
     security_opt:
       - no-new-privileges
-    image: zoraxydocker/zoraxy:v3.1.9
+    image: zoraxydocker/zoraxy:v3.2.1
     restart: unless-stopped
     ports:
       - name: smtp
