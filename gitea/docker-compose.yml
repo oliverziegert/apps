@@ -33,7 +33,7 @@ services:
       - ALL
     security_opt:
       - no-new-privileges
-    image: gitea/gitea:1.23.7-rootless
+    image: gitea/gitea:1.23.8-rootless
     restart: unless-stopped
     depends_on:
       postgres:
