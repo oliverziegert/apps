@@ -2,7 +2,7 @@ name: minio
 services:
   minio:
     user: 473:473
-    image: minio/minio:RELEASE.2024-11-07T00-52-20Z
+    image: docker.io/minio/minio:RELEASE.2025-04-22T22-12-26Z
     restart: unless-stopped
     command:
       - server
