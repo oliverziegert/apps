@@ -149,7 +149,7 @@ services:
       test: "curl --head --silent --output /dev/null --show-error --fail http://127.0.0.1:3000/health"
 
   tika:
-    image: docker.io/apache/tika:3.1.0.0
+    image: docker.io/apache/tika:3.2.0.0
     restart: unless-stopped
     networks:
       - paperless-ngx
