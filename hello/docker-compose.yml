@@ -19,7 +19,7 @@ services:
         target: access_key
       - source: secret_key
         target: secret_key
-    image: y4m4/s3www:v0.9.0
+    image: y4m4/s3www:v1.0.0
     restart: unless-stopped
     user: '65534:65534'
     networks:
