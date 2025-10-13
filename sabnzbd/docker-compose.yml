@@ -2,12 +2,15 @@ name: sabnzbd
 services:
   sabnzbd:
     user: 568:568
-    image: ghcr.io/onedr0p/sabnzbd:4.4.1
+    image: lscr.io/linuxserver/sabnzbd:4.5.3
     restart: unless-stopped
     cap_drop:
       - ALL
     security_opt:
       - no-new-privileges
+    read_only: true
+    tmpfs:
+      - /run:exec
     healthcheck:
       interval: 10s
       retries: 30
@@ -24,6 +27,8 @@ services:
       timeout: 5s
     environment:
       TZ: Europe/Berlin
+      PUID: 568
+      PGID: 568
     volumes:
       - type: bind
         source: ${VOLUME_CONFIG_SRC}
