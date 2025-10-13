@@ -10,7 +10,7 @@ services:
       - no-new-privileges
     read_only: true
     tmpfs:
-      - /run:exec
+      - /run:uid=568,gid=568,exec
     healthcheck:
       interval: 10s
       retries: 30
