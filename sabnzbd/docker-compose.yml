@@ -2,7 +2,7 @@ name: sabnzbd
 services:
   sabnzbd:
     user: 568:568
-    image: lscr.io/linuxserver/sabnzbd:4.5.4
+    image: lscr.io/linuxserver/sabnzbd:4.5.5
     restart: unless-stopped
     cap_drop:
       - ALL
