@@ -138,7 +138,7 @@ services:
       - gotenberg
       - '--chromium-disable-javascript=true'
       - '--chromium-allow-list=file:///tmp/.*'
-    image: docker.io/gotenberg/gotenberg:8.24
+    image: docker.io/gotenberg/gotenberg:8.25
     restart: unless-stopped
     networks:
       - paperless-ngx
