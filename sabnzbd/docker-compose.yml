@@ -41,7 +41,7 @@ services:
     network_mode: "service:gluetun"
 
   gluetun:
-    image: qmcgaw/gluetun:v3.40.1
+    image: qmcgaw/gluetun:v3.40.3
     cap_add:
       - NET_ADMIN
     devices:
