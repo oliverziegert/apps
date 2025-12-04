@@ -10,7 +10,7 @@ x-shared: &shared
     - no-new-privileges
   restart: always
   user: "1000:1000"
-  image: docker.n8n.io/n8nio/n8n:1.123.1
+  image: docker.n8n.io/n8nio/n8n:1.123.2
   environment:
     GENERIC_TIMEZONE: Europe/Berlin
     DB_TYPE: postgresdb
