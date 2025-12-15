@@ -11,6 +11,7 @@ services:
     read_only: true
     tmpfs:
       - /run:uid=568,gid=568,exec
+      - /tmp:uid=568,gid=568,exec
     healthcheck:
       interval: 10s
       retries: 30
