@@ -12,7 +12,7 @@ services:
       - uptime-kuma
       - reverse-proxy
   signal-cli-rest-api:
-    image: bbernhard/signal-cli-rest-api:0.96
+    image: bbernhard/signal-cli-rest-api:0.97
     pull_policy: missing
     restart: unless-stopped
     environment:
