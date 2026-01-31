@@ -70,7 +70,7 @@ services:
       - ALL
     security_opt:
       - no-new-privileges
-    image: ghcr.io/paperless-ngx/paperless-ngx:2.20.5
+    image: ghcr.io/paperless-ngx/paperless-ngx:2.20.6
     restart: unless-stopped
     depends_on:
       broker:
