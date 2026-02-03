@@ -1,7 +1,7 @@
 name: smtp-relay
 services:
   postfix-relay:
-    image: mwader/postfix-relay:1.2.6
+    image: mwader/postfix-relay:1.2.7
     restart: unless-stopped
     environment:
       TZ: Europe/Berlin
