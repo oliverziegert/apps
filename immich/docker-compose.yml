@@ -65,7 +65,7 @@ services:
     security_opt:
       - no-new-privileges
     user: "568:568"
-    image: ghcr.io/immich-app/immich-server:v2.5.3
+    image: ghcr.io/immich-app/immich-server:v2.5.5
     restart: unless-stopped
     depends_on:
       database:
@@ -100,7 +100,7 @@ services:
     security_opt:
       - no-new-privileges
     #user: "568:568"
-    image: ghcr.io/immich-app/immich-machine-learning:v2.5.3
+    image: ghcr.io/immich-app/immich-machine-learning:v2.5.5
     restart: unless-stopped
     environment:
       TZ: Europe/Berlin
