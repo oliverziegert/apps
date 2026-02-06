@@ -248,7 +248,7 @@ services:
       - SYS_NICE
     security_opt:
       - no-new-privileges
-    image: ghcr.io/nextcloud-releases/whiteboard:v1.5.4
+    image: ghcr.io/nextcloud-releases/whiteboard:v1.5.5
     restart: unless-stopped
     user: 65534:65534
     environment:
