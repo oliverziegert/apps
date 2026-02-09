@@ -35,7 +35,7 @@ services:
     security_opt:
       - no-new-privileges
     user: "568:568"
-    image: docker.io/valkey/valkey:8.1.5-alpine3.23
+    image: docker.io/valkey/valkey:9.0.2-alpine3.23
     restart: unless-stopped
     environment:
       TZ: Europe/Berlin
