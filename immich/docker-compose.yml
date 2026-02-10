@@ -100,7 +100,7 @@ services:
     security_opt:
       - no-new-privileges
     #user: "568:568"
-    image: ghcr.io/immich-app/immich-machine-learning:v2.5.5
+    image: ghcr.io/immich-app/immich-machine-learning:v2.5.6
     restart: unless-stopped
     environment:
       TZ: Europe/Berlin
