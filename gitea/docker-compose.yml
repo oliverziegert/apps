@@ -6,7 +6,7 @@ services:
     security_opt:
       - no-new-privileges
     user: "999:999"
-    image: docker.io/library/postgres:17.7-alpine3.22
+    image: docker.io/library/postgres:17.8-alpine3.22
     restart: unless-stopped
     environment:
       TZ: Europe/Berlin
