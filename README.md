@@ -36,7 +36,7 @@ This repository contains production-ready Docker Compose configurations with har
 
 ### Storage & Backup
 
-- **[minio](minio/)** - S3-compatible object storage server
+- **[rustfs](rustfs/)** - S3-compatible object storage server
 
 ### Security & Authentication
 
@@ -174,7 +174,7 @@ This repository uses [Renovate Bot](https://github.com/renovatebot/renovate) for
 
 - Docker images are automatically monitored for updates
 - Pull requests are created for new versions
-- Special versioning rules for services like MinIO (date-based releases)
+- Special versioning rules for services like RustFS (pre-release semver)
 
 ### Manual Updates
 
