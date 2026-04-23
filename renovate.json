@@ -8,6 +8,12 @@
       "matchDatasources": ["docker"],
       "matchPackageNames": ["docker.io/minio/minio"],
       "versioning": "regex:^RELEASE\\.(?<major>\\d{4})-(?<minor>\\d{2})-(?<patch>\\d{2})"
+    },
+    {
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["docker.io/rustfs/rustfs"],
+      "versioning": "semver",
+      "ignoreUnstable": false
     }
   ]
 }
