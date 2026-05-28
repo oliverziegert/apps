@@ -2,7 +2,7 @@ name: teamspeak3
 services:
   teamspeak3:
     user: 9987:9987
-    image: docker.io/library/teamspeak:3.13.7
+    image: docker.io/library/teamspeak:3.13.8
     restart: unless-stopped
     cap_drop: [ALL]
     security_opt:
