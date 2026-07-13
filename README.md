@@ -40,6 +40,7 @@ This repository contains production-ready Docker Compose configurations with har
 
 ### Security & Authentication
 
+- **[authentik](authentik/)** - Identity provider and SSO (OAuth2/OIDC, SAML, LDAP) with PostgreSQL backend
 - **[vaultwarden](vaultwarden/)** - Self-hosted Bitwarden password manager with PostgreSQL backend
 
 ### Communication
