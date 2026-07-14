@@ -1,0 +1,42 @@
+name: paperless-ai
+services:
+  paperless-ai:
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges
+    user: "568:568"
+    image: docker.io/clusterzx/paperless-ai:3.0.9@sha256:2b65888163fd59716f1c8285b31c5bd0b30c9c3c192c42b516688e3887d4ba60
+    restart: unless-stopped
+    environment:
+      TZ: Europe/Berlin
+      PAPERLESS_AI_PORT: "${PAPERLESS_AI_PORT}"
+      RAG_SERVICE_URL: http://localhost:8000
+      RAG_SERVICE_ENABLED: "true"
+      # PM2 and the Node runtime need a writable HOME; point it at the data volume
+      # since the image ships no privilege-dropping entrypoint (runs as 568:568).
+      HOME: ${VOLUME_DATA_DST}
+      PM2_HOME: ${VOLUME_DATA_DST}/.pm2
+    healthcheck:
+      interval: 10s
+      retries: 30
+      start_period: 60s
+      test: "curl --silent --output /dev/null --show-error --fail http://127.0.0.1:${PAPERLESS_AI_PORT}/health"
+      timeout: 5s
+    volumes:
+      - type: bind
+        source: ${VOLUME_DATA_SRC}
+        target: ${VOLUME_DATA_DST}
+        read_only: false
+      # The app hardcodes its log dir to ./logs (/app/logs), which is root-owned
+      # in the image. Give the non-root user a writable, ephemeral mount here;
+      # logs still stream to `docker compose logs` via pm2's stdout.
+      - type: tmpfs
+        target: /app/logs
+    networks:
+      - reverse-proxy
+
+networks:
+  reverse-proxy:
+    external: true
+    name: reverse-proxy

@@ -24,6 +24,7 @@ This repository contains production-ready Docker Compose configurations with har
 - **[collabora](collabora/)** - Online office suite integration for Nextcloud
 - **[n8n](n8n/)** - Workflow automation platform with PostgreSQL backend
 - **[paperless-ngx](paperless-ngx/)** - Document management system with OCR, PostgreSQL, Valkey, Gotenberg, and Tika
+- **[paperless-ai](paperless-ai/)** - AI-powered automatic tagging, classification, and RAG semantic search for paperless-ngx
 
 ### Media & Entertainment
 
