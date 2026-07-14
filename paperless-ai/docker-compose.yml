@@ -33,6 +33,11 @@ services:
       # logs still stream to `docker compose logs` via pm2's stdout.
       - type: tmpfs
         target: /app/logs
+      # The app regenerates its OpenAPI spec at /app/OPENAPI/openapi.json on
+      # startup, but that dir is root-owned in the image. Give the non-root user
+      # a writable, ephemeral mount here (the spec is rebuilt each boot).
+      - type: tmpfs
+        target: /app/OPENAPI
     networks:
       - reverse-proxy
 
