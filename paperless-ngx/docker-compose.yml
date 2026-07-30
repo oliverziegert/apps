@@ -33,13 +33,14 @@ services:
       test: "redis-cli -h 127.0.0.1 -p 6379 -a $$VALKEY_PASSWORD ping | grep -q PONG"
     networks:
       - paperless-ngx
+      
   db:
     cap_drop:
       - ALL
     security_opt:
       - no-new-privileges
     user: "999:999"
-    image: docker.io/library/postgres:17.10-alpine3.22@sha256:b02d9b5bcf608c2719da32cdabee274a33841202487fd5dc9b065b63f886753f
+    image: docker.io/library/postgres:18.4-alpine3.24@sha256:9a8afca54e7861fd90fab5fdf4c42477a6b1cb7d293595148e674e0a3181de15
     restart: unless-stopped
     environment:
       TZ: Europe/Berlin
