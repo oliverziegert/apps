@@ -103,7 +103,7 @@ services:
     healthcheck:
       interval: 10s
       retries: 30
-      start_period: 3600s
+      start_period: 300s
       test: "curl --silent --output /dev/null --show-error --fail http://127.0.0.1:8000/"
       timeout: 5s
     environment:
