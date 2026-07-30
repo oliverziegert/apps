@@ -1,0 +1,60 @@
+name: paperless-gpt
+services:
+  paperless-gpt:
+    # The image's entrypoint must start as root: it chowns the data mounts to
+    # PUID:PGID and then drops privileges via su-exec. So no `user:` here —
+    # instead grant only the caps that chown/su-exec need.
+    cap_add:
+      - CHOWN
+      - DAC_OVERRIDE
+      - SETGID
+      - SETUID
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges
+    image: ghcr.io/icereed/paperless-gpt:v0.26.1@sha256:6b9024d1adebfcd6bd7ec5e9da2ca17f9879b1fb5ce749d72905bbb121091ef8
+    restart: unless-stopped
+    environment:
+      TZ: Europe/Berlin
+      PUID: "568"
+      PGID: "568"
+      LISTEN_INTERFACE: "0.0.0.0:${PAPERLESS_GPT_PORT}"
+      LOG_LEVEL: info
+      PAPERLESS_BASE_URL: "${PAPERLESS_BASE_URL}"
+      PAPERLESS_API_TOKEN: "${PAPERLESS_API_TOKEN}"
+      PAPERLESS_PUBLIC_URL: "${PAPERLESS_PUBLIC_URL}"
+      LLM_PROVIDER: ollama
+      LLM_MODEL: "${LLM_MODEL}"
+      LLM_LANGUAGE: "${LLM_LANGUAGE}"
+      OLLAMA_HOST: "${OLLAMA_HOST}"
+      OLLAMA_CONTEXT_LENGTH: "${OLLAMA_CONTEXT_LENGTH}"
+      VISION_LLM_PROVIDER: "${VISION_LLM_PROVIDER}"
+      VISION_LLM_MODEL: "${VISION_LLM_MODEL}"
+    healthcheck:
+      interval: 10s
+      retries: 30
+      start_period: 30s
+      # No curl in the image; busybox wget ships with the Alpine base.
+      test: "wget --quiet --spider http://127.0.0.1:${PAPERLESS_GPT_PORT}/"
+      timeout: 5s
+    volumes:
+      - type: bind
+        source: ${VOLUME_PROMPTS_SRC}
+        target: ${VOLUME_PROMPTS_DST}
+        read_only: false
+      - type: bind
+        source: ${VOLUME_DB_SRC}
+        target: ${VOLUME_DB_DST}
+        read_only: false
+      - type: bind
+        source: ${VOLUME_CONFIG_SRC}
+        target: ${VOLUME_CONFIG_DST}
+        read_only: false
+    networks:
+      - reverse-proxy
+
+networks:
+  reverse-proxy:
+    external: true
+    name: reverse-proxy

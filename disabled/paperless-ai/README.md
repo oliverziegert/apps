@@ -1,7 +1,9 @@
 # paperless-ai
 
+> **Disabled:** replaced by [paperless-gpt](../../paperless-gpt).
+
 AI-powered document tagging and semantic search for
-[paperless-ngx](../paperless-ngx). Watches paperless for new documents,
+[paperless-ngx](../../paperless-ngx). Watches paperless for new documents,
 analyzes them with an LLM (OpenAI / Ollama / DeepSeek / any OpenAI-compatible
 backend) and assigns title, tags, document type and correspondent — plus a
 RAG-powered chat over your archive.
