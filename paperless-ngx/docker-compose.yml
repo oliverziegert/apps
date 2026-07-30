@@ -12,7 +12,7 @@ services:
       - source: valkey.conf
         target: /etc/valkey/valkey.conf
     user: "568:568"
-    image: docker.io/valkey/valkey:8.1.1-alpine3.21@sha256:6a57d58c0a37cf7acc3045ac0fd6dd91be339774106ab4d9ca088013a096a99f
+    image: docker.io/valkey/valkey:9.1.1-alpine3.24@sha256:ee91f7a174ac4d6a6b0685b3a60e321f0a9dbbb691f9b0e285be2ba1d1be8328
     command: 
       - valkey-server
       - /etc/valkey/valkey.conf
