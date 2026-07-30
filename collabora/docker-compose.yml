@@ -1,33 +1,23 @@
 name: collabora
 services:
   collabora:
-    image: collabora/code:26.04.2.4.1
+    image: docker.io/collabora/code:26.04.2.4.1@sha256:1f864ce3f0c49e867787b6dd303bd6ba989542d3023f6809df558eafd04c1b97
     restart: unless-stopped
     deploy:
       resources: 
         limits: 
           memory: 4096M
-    cap_add: 
+    # Minimum set for coolwsd's jail setup, verified by bisect against this
+    # image: dropping any one of these makes forkit die with ECHILD at startup.
+    cap_add:
       - CHOWN
       - FOWNER
-      - DAC_OVERRIDE
-      - SETGID
-      - SETUID
-      - SETFCAP
       - SYS_CHROOT
-      - MKNOD
     cap_drop: 
       - ALL
-    healthcheck: 
-      interval: 10s
-      retries: 30
-      start_period: 10s
-      test:
-        - CMD
-        - bash
-        - -c
-        - "exec 3<>/dev/tcp/127.0.0.1/9980 && printf 'GET / HTTP/1.1\\r\\nHost: localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3 && grep -q 'OK' <&3"
-      timeout: 5s
+    # Healthcheck is inherited from the image (coolwsd --probe). Do not pin it
+    # here: upstream removed the shell entirely in 26.04, which broke the
+    # previous bash/dev-tcp override.
     environment:
       DONT_GEN_SSL_CERT: true
       TZ: Europe/Berlin
