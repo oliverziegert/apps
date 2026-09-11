@@ -2,7 +2,7 @@ name: rustfs
 services:
   rustfs:
     user: 10001:10001
-    image: docker.io/rustfs/rustfs:1.0.0-rc.5-glibc@sha256:65fdebfd6cf628f66747f0aacb2c5d531bd634f39e382c6ef07142dbc3313876
+    image: docker.io/rustfs/rustfs:1.0.0-rc.6-glibc@sha256:9e0ee871140f46c6ffda84d697a8a23d203a5f0ca5d1d20cf6ddaa84b7f996d2
     restart: unless-stopped
     cap_drop: 
       - ALL
