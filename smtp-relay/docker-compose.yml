@@ -49,7 +49,7 @@ services:
       OPENDKIM_DOMAINS: ${OPENDKIM_DOMAINS}
       POSTFIX_mydestination: ${POSTFIX_MYDESTINATION}
       POSTFIX_myhostname: ${POSTFIX_MYHOSTNAME}
-      POSTFIX_mynetworks: 127.0.0.0/8 [::1]/128 172.16.2.0/24 [fdd0:0:0:2::]/64
+      POSTFIX_mynetworks: ${POSTFIX_MYNETWORKS}
       POSTFIX_relayhost: ${POSTFIX_RELAYHOST}
       POSTFIX_smtp_helo_name: ${POSTFIX_SMTP_HELO_NAME}
       POSTFIX_inet_protocols: ${POSTFIX_INET_PROTOCOLS}
