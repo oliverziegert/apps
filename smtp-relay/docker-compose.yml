@@ -49,11 +49,24 @@ services:
       OPENDKIM_DOMAINS: ${OPENDKIM_DOMAINS}
       POSTFIX_mydestination: 'localhost'
       POSTFIX_myhostname: ${POSTFIX_MYHOSTNAME}
-      POSTFIX_mynetworks: 0.0.0.0/0
-      POSTFIX_relayhost: ${POSTFIX_RELAYHOST}
+      # Only loopback and the reverse-proxy network (both families) may relay.
+      # Mail leaves from the VPN's control-plane address, so an open relay
+      # risks the whole VPN; NetBird overlay sources must stay outside this.
+      POSTFIX_mynetworks: 127.0.0.0/8 [::1]/128 172.16.2.0/24 [fdd0:0:0:2::]/64
+      # Direct-to-MX delivery from smtp-out.pc-ziegert.de (141.95.41.247,
+      # matching PTR) through the netbird sidecar's exit-node route.
+      POSTFIX_relayhost: ''
+      POSTFIX_smtp_helo_name: smtp-out.pc-ziegert.de
+      # Listener is dual-stack (apps connect over IPv6 on reverse-proxy), but
+      # delivery is IPv4-only: the exit node routes IPv4, and only that
+      # address has FCrDNS and SPF.
+      POSTFIX_inet_protocols: all
+      POSTFIXMASTER_smtp__unix: smtp unix - - n - - smtp -o inet_protocols=ipv4
       POSTFIX_smtp_sasl_security_options: noanonymous
       POSTFIX_smtp_sasl_tls_security_options: noanonymous
-      POSTFIX_smtp_tls_security_level: encrypt
+      # Opportunistic TLS, the norm for MX delivery; encrypt would defer mail
+      # to MX hosts without STARTTLS.
+      POSTFIX_smtp_tls_security_level: may
       POSTFIX_smtp_use_tls: 'yes'
       POSTFIX_smtp_tls_cert_file: /etc/pki/tls/certs/tls.crt
       POSTFIX_smtp_tls_key_file: /etc/pki/tls/private/tls.key
