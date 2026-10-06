@@ -27,13 +27,21 @@ container keep using the home connection.
   `smtp-relay-postfix-relay-1`, so apps keep reaching the relay under either
   name. If an alias is missing, submission breaks silently for the apps that use
   it.
-- **IPv4 only**: `inet_protocols = ipv4`, because the exit node routes IPv4
-  only. Without it, Postfix could prefer an AAAA MX and leave over the home IPv6
-  address.
-- **No open relay**: `mynetworks` is loopback plus the `reverse-proxy` subnet.
+- **IPv4-only delivery, dual-stack listener**: `reverse-proxy` is dual-stack,
+  and apps (Nextcloud, for one) connect over IPv6, so the listener keeps
+  `inet_protocols = all`. Only the SMTP client is held to IPv4, through a
+  master.cf override (`POSTFIXMASTER_smtp__unix` with
+  `-o inet_protocols=ipv4`). The exit node routes IPv4 only, and only
+  `141.95.41.247` has FCrDNS and SPF.
+- **No open relay**: `mynetworks` is loopback plus the `reverse-proxy` subnets
+  (`172.16.2.0/24`, `fdd0:0:0:2::/64`).
   The relay is reachable from the NetBird overlay, and abuse from the VPS
   address would get the whole VPN's control plane blocklisted or suspended.
   Overlay sources must get `Relay access denied`.
+- **No TLS on the listener**: clients are containers on the same Docker
+  network, so `smtpd_tls_security_level = none`, with no certificate or secrets.
+  Apps must be configured for no encryption, not STARTTLS. Outbound delivery
+  still uses opportunistic TLS (`smtp_tls_security_level = may`).
 - **Outage behaviour**: if the agent or the exit node is down, mail queues and
   is retried for Postfix's default 5 days. It never falls back to the home
   line.
@@ -55,7 +63,9 @@ reusable key enrolls a new peer, which joins `mail-relays` on its own.
 
 ```bash
 docker exec smtp-relay-netbird-1 netbird status          # Connected
-docker exec smtp-relay-postfix-relay-1 wget -qO- -4 ifconfig.co   # 141.95.41.247
+# neither container ships curl/wget; borrow the shared namespace instead
+docker run --rm --network container:smtp-relay-netbird-1 curlimages/curl -4 -s ifconfig.co   # 141.95.41.247
 docker exec smtp-relay-postfix-relay-1 postconf relayhost smtp_helo_name \
   inet_protocols mynetworks smtp_tls_security_level
+docker exec smtp-relay-postfix-relay-1 postconf -M smtp/unix  # ... -o inet_protocols=ipv4
 ```
