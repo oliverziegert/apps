@@ -38,6 +38,10 @@ container keep using the home connection.
   The relay is reachable from the NetBird overlay, and abuse from the VPS
   address would get the whole VPN's control plane blocklisted or suspended.
   Overlay sources must get `Relay access denied`.
+- **No TLS on the listener**: clients are containers on the same Docker
+  network, so `smtpd_tls_security_level = none`, with no certificate or secrets.
+  Apps must be configured for no encryption, not STARTTLS. Outbound delivery
+  still uses opportunistic TLS (`smtp_tls_security_level = may`).
 - **Outage behaviour**: if the agent or the exit node is down, mail queues and
   is retried for Postfix's default 5 days. It never falls back to the home
   line.
