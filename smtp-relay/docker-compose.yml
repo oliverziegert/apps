@@ -9,7 +9,7 @@ services:
   # SYS_RESOURCE and /dev/net/tun. Postfix shares the namespace but not
   # these capabilities.
   netbird:
-    image: netbirdio/netbird:0.81.5
+    image: netbirdio/netbird:0.82.0
     restart: unless-stopped
     environment:
       NB_SETUP_KEY: ${NB_SETUP_KEY}
